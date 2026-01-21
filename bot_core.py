@@ -1,13 +1,14 @@
 from flask import Flask, request
-import requests
+import os
 
 app = Flask(__name__)
 
 VERIFY_TOKEN = "luma_verify_token"
 
-@app.route("/", methods=["GET"])
-def home():
+@app.route("/")
+def index():
     return "LUMA bot is running 🤖✨", 200
+
 
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
@@ -19,12 +20,13 @@ def webhook():
         if mode == "subscribe" and token == VERIFY_TOKEN:
             return challenge, 200
         else:
-            return "Verification failed", 403
+            return "Forbidden", 403
 
     if request.method == "POST":
         data = request.get_json()
-        print(data)
-        return "EVENT_RECEIVED", 200
+        print("Incoming webhook:", data)
+        return "OK", 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
